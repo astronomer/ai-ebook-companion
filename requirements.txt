@@ -1,1 +1,17 @@
 # Astro Runtime includes the following pre-installed providers packages: https://www.astronomer.io/docs/astro/runtime-image-architecture#provider-packages
+airflow-ai-sdk[openai]==0.1.6
+apache-airflow-providers-common-messaging==1.0.5
+apache-airflow-providers-amazon[s3fs]==9.12.0
+aiobotocore==2.24.1
+beautifulsoup4==4.13.5
+pydantic-ai-slim[duckduckgo]<0.6.0
+apache-airflow-providers-common-io==1.6.2
+scikit-learn==1.7.1
+sentence-transformers==5.1.0
+apache-airflow-providers-weaviate==3.0.3
+apache-airflow-providers-apache-kafka==1.9.0
+protobuf==5.29.0
+grpcio==1.71.0
+matplotlib==3.10.5
+openai==1.101.0
+pandas==2.1.2
