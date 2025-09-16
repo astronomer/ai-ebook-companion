@@ -3,7 +3,7 @@ from typing import Any
 
 _USERNAME = "admin"
 _PASSWORD = "admin"
-_HOST = "http://localhost:28080/"  # To learn how to send API requests to Airflow running on Astro see: https://www.astronomer.io/docs/astro/airflow-api/
+_HOST = "http://localhost:8080/"  # To learn how to send API requests to Airflow running on Astro see: https://www.astronomer.io/docs/astro/airflow-api/
 
 _DAG_ID = "HITLOperator_syntax_example"
 _TASK_ID = "hitl_task"
@@ -145,6 +145,7 @@ def main():
     dag_runs = _get_running_dagruns_for_dag(_DAG_ID)["dag_runs"]
     if not dag_runs:
         print("No running dag runs found for DAG: ", _DAG_ID)
+        print("Please run the dag and wait for it to start running")
     else:
         for dag_run in dag_runs:
             hitl_details = _get_hitl_details(_DAG_ID, dag_run["dag_run_id"], _TASK_ID)
