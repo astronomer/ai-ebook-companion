@@ -105,7 +105,7 @@ def prompt_chaining_example():
             "Consider the customer's tone, urgency indicators, technical complexity, and business impact. "
             "Categorize accurately and determine if escalation is needed based on severity, customer tier, or complexity."
         ),
-        result_type=TicketAnalysis,
+        output_type=TicketAnalysis,
     )
     def analyze_ticket(ticket: dict) -> str:
 
@@ -128,7 +128,7 @@ def prompt_chaining_example():
             "Match the tone to the customer's sentiment and tier. Be specific about next steps and timelines. "
             "For technical issues, provide clear guidance. For billing, be helpful and upselling when appropriate."
         ),
-        result_type=CustomerResponse,
+        output_type=CustomerResponse,
     )
     def generate_customer_response(ticket: dict, analysis: TicketAnalysis) -> str:
         response_prompt = f"""
@@ -157,7 +157,7 @@ def prompt_chaining_example():
             "Include technical details, business impact, customer context, and clear action items. "
             "Only activate for tickets that truly need escalation based on the analysis."
         ),
-        result_type=EscalationNotes,
+        output_type=EscalationNotes,
     )
     def generate_escalation_notes(
         ticket: dict, analysis: TicketAnalysis, response: CustomerResponse

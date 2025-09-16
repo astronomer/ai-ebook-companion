@@ -6,13 +6,13 @@ from airflow.sdk import dag, task, chain, Asset, AssetWatcher
 def apply_incident_function(*args, **kwargs):
     message = args[-1]
     incident_data = json.loads(message.value())
-    print(f"📡 Received incident report via subspace: {incident_data}")
+    print(f"Received incident report via subspace: {incident_data}")
     return incident_data
 
 
 incident_trigger = MessageQueueTrigger(
     queue="kafka://localhost:9092/incident_channel",
-    apply_function="dags.patterns.level_3B_routing.apply_incident_function",
+    apply_function="dags.patterns.routing_example.apply_incident_function",
 )
 
 incident_asset = Asset(
@@ -33,10 +33,10 @@ def routing_example():
         for event in triggering_asset_events[incident_asset]:
             incident_data = event.extra["payload"]
             print(
-                f"🚨 Starfleet Command: Processing incident {incident_data['incident_id']}"
+                f"Starfleet Command: Processing incident {incident_data['incident_id']}"
             )
-            print(f"📍 Location: {incident_data['location']}")
-            print(f"👤 Reported by: {incident_data['reported_by']}")
+            print(f"Location: {incident_data['location']}")
+            print(f"Reported by: {incident_data['reported_by']}")
             return incident_data
 
     @task.llm_branch(
@@ -65,40 +65,40 @@ def routing_example():
 
     @task
     def handle_critical(incident: dict):
-        print(f"🚨 CRITICAL ALERT - INCIDENT {incident['incident_id']}")
-        print(f"📍 Location: {incident['location']}")
-        print(f"👤 Reported by: {incident['reported_by']}")
-        print(f"⚠️  EMERGENCY RESPONSE ACTIVATED")
-        print(f"🎯 Actions: Captain and senior staff notified")
-        print(f"📢 All hands alert status initiated")
-        print(f"🚑 Emergency teams dispatched immediately")
-        print(f"📋 Description: {incident['description']}")
+        print(f"CRITICAL ALERT - INCIDENT {incident['incident_id']}")
+        print(f"Location: {incident['location']}")
+        print(f"Reported by: {incident['reported_by']}")
+        print(f"EMERGENCY RESPONSE ACTIVATED")
+        print(f"Actions: Captain and senior staff notified")
+        print(f"All hands alert status initiated")
+        print(f"Emergency teams dispatched immediately")
+        print(f"Description: {incident['description']}")
         print("=" * 60)
         return {"status": "critical_response_activated", "response_time": "immediate"}
 
     @task
     def handle_standard(incident: dict):
-        print(f"⚡ STANDARD INCIDENT - {incident['incident_id']}")
-        print(f"📍 Location: {incident['location']}")
-        print(f"👤 Reported by: {incident['reported_by']}")
-        print(f"🔧 Standard operational response initiated")
-        print(f"🎯 Actions: Department head notified")
-        print(f"📅 Work order created for next duty shift")
-        print(f"🔍 Diagnostic team will investigate")
-        print(f"📋 Description: {incident['description']}")
+        print(f"STANDARD INCIDENT - {incident['incident_id']}")
+        print(f"Location: {incident['location']}")
+        print(f"Reported by: {incident['reported_by']}")
+        print(f"Standard operational response initiated")
+        print(f"Actions: Department head notified")
+        print(f"Work order created for next duty shift")
+        print(f"Diagnostic team will investigate")
+        print(f"Description: {incident['description']}")
         print("-" * 60)
         return {"status": "standard_response_queued", "response_time": "next_shift"}
 
     @task
     def handle_low_priority(incident: dict):
-        print(f"📝 LOW PRIORITY - {incident['incident_id']}")
-        print(f"📍 Location: {incident['location']}")
-        print(f"👤 Reported by: {incident['reported_by']}")
-        print(f"⏰ Added to maintenance backlog")
-        print(f"🎯 Actions: Routine maintenance scheduled")
-        print(f"📊 No immediate impact on operations")
-        print(f"🔧 Will be resolved during regular maintenance")
-        print(f"📋 Description: {incident['description']}")
+        print(f"LOW PRIORITY - {incident['incident_id']}")
+        print(f"Location: {incident['location']}")
+        print(f"Reported by: {incident['reported_by']}")
+        print(f"Added to maintenance backlog")
+        print(f"Actions: Routine maintenance scheduled")
+        print(f"No immediate impact on operations")
+        print(f"Will be resolved during regular maintenance")
+        print(f"Description: {incident['description']}")
         print("." * 60)
         return {"status": "maintenance_scheduled", "response_time": "routine"}
 

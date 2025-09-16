@@ -1,45 +1,74 @@
-Overview
-========
+# AI Pattern example repository
 
-Welcome to Astronomer! This project was generated after you ran 'astro dev init' using the Astronomer CLI. This readme describes the contents of the project, as well as how to run Apache Airflow on your local machine.
+This repository contains a collection of AI pattern examples for Apache Airflow® as an extension of the Best Practices for GenAI Pipelines presentation at [Beyond Analytics 2025](https://www.astronomer.io/lp/beyond-analytics-de/). 
 
-Project Contents
-================
+> [!TIP]
+> This repository is using a pre-released version of Airflow 3.1 in order to be able to show human-in-the-loop functionality and is not meant to be used in production. For more information on human-in-the-loop and other exciting Airflow 3.1 features, sign up for the free [Airflow 3.1 webinar](https://www.astronomer.io/events/webinars/airflow-3-1-release-video/).
 
-Your Astro project contains the following files and folders:
+## How to run this repository locally
 
-- dags: This folder contains the Python files for your Airflow DAGs. By default, this directory includes one example DAG:
-    - `example_astronauts`: This DAG shows a simple ETL pipeline example that queries the list of astronauts currently in space from the Open Notify API and prints a statement for each astronaut. The DAG uses the TaskFlow API to define tasks in Python, and dynamic task mapping to dynamically print a statement for each astronaut. For more on how this DAG works, see our [Getting started tutorial](https://www.astronomer.io/docs/learn/get-started-with-airflow).
-- Dockerfile: This file contains a versioned Astro Runtime Docker image that provides a differentiated Airflow experience. If you want to execute other commands or overrides at runtime, specify them here.
-- include: This folder contains any additional files that you want to include as part of your project. It is empty by default.
-- packages.txt: Install OS-level packages needed for your project by adding them to this file. It is empty by default.
-- requirements.txt: Install Python packages needed for your project by adding them to this file. It is empty by default.
-- plugins: Add custom or community plugins for your project to this file. It is empty by default.
-- airflow_settings.yaml: Use this local-only file to specify Airflow Connections, Variables, and Pools instead of entering them in the Airflow UI as you develop DAGs in this project.
+1. Fork this repo and clone it to your local machine.
 
-Deploy Your Project Locally
-===========================
+2. Make sure you have the [Astro CLI](https://www.astronomer.io/docs/astro/cli/install-cli) installed and are at least on version 1.34.0 to run Airflow 3.
 
-Start Airflow on your local machine by running 'astro dev start'.
+3. Copy the `.env_example` file to a new file called `.env` and add your information. The only information you need to provide is your [OpenAI API Key](https://platform.openai.com/api-keys) in order to use the Airflow AI SDK. 
 
-This command will spin up five Docker containers on your machine, each for a different Airflow component:
+3. Start the Airflow project with the following command:
+   ```bash
+   astro dev start
+   ```
 
-- Postgres: Airflow's Metadata Database
-- Scheduler: The Airflow component responsible for monitoring and triggering tasks
-- DAG Processor: The Airflow component responsible for parsing DAGs
-- API Server: The Airflow component responsible for serving the Airflow UI and API
-- Triggerer: The Airflow component responsible for triggering deferred tasks
+    This command starts 7 containers:
+    - Postgres: Airflow's Metadata Database
+    - Scheduler: The Airflow component responsible for monitoring and triggering tasks
+    - Dag Processor: The Airflow component responsible for parsing dags
+    - API Server: The Airflow component responsible for serving the Airflow UI and API
+    - Triggerer: The Airflow component responsible for triggering deferred tasks
+    - Kafka: A local Kafka server with one topic `my_topic`. The connection `kafka_default` in `.env_example` is configured to use this Kafka server.
+    - weaviate: A local Weaviate vector database to interact with from within Airflow tasks. The connection `weaviate_default` in `.env_example` is configured to use this database.
 
-When all five containers are ready the command will open the browser to the Airflow UI at http://localhost:8080/. You should also be able to access your Postgres Database at 'localhost:5432/postgres' with username 'postgres' and password 'postgres'.
+4. Access the Airflow UI at `localhost:8080`. 
+5. Run the dags and make changes to experiment with the features. 
 
-Note: If you already have either of the above ports allocated, you can either [stop your existing Docker containers or change the port](https://www.astronomer.io/docs/astro/cli/troubleshoot-locally#ports-are-not-available-for-my-local-airflow-webserver).
+Note that two dags (inference_execution_example and routing_example) are using an event-driven schedule.
+In order to run them you need to unpause them, then trigger the relevant helper dag (helper_inference_execution_producer_dag or helper_routing_producer_dag).
 
-Deploy Your Project to Astronomer
-=================================
+## Content
 
-If you have an Astronomer account, pushing code to a Deployment on Astronomer is simple. For deploying instructions, refer to Astronomer documentation: https://www.astronomer.io/docs/astro/deploy-code/
+Human-in-the-loop example dags:
 
-Contact
-=======
+- [ApprovalOperator_syntax_example](dags/human_in_the_loop/ApprovalOperator_syntax_example.py): This dag shows how to use the ApprovalOperator to make a human-in-the-loop approve or reject information created by the dag, affecting its execution.
+- [HITLBranchOperator_syntax_example](dags/human_in_the_loop/HITLBranchOperator_syntax_example.py): Demonstrates multi-select branching for quarterly budget approval workflow where finance managers can select multiple budget categories to approve.
+- [HITLEntryOperator_syntax_example](dags/human_in_the_loop/HITLEntryOperator_syntax_example.py): Shows text entry functionality for customer support ticket responses with custom parameters for urgency and response fields.
+- [HITLOperator_syntax_example](dags/human_in_the_loop/HITLOperator_syntax_example.py): Basic HITL example for expense approval with dropdown options for payment methods and execution timeout settings.
+- [notifier_example](dags/human_in_the_loop/notifier_example.py): Custom notifier implementation that generates direct links to HITL UI pages and sends notifications through external services.
 
-The Astronomer CLI is maintained with love by the Astronomer team. To report a bug or suggest a change, reach out to our support.
+GenAI pattern dags:
+
+- [batch_inference_example](dags/patterns/batch_inference_example.py): Processes batches of customer feedback statements to extract sentiment analysis, summaries, and feature requests using structured AI output models.
+- [fine_tuning_example](dags/patterns/fine_tuning_example.py): Dag for fine-tuning OpenAI models using custom training data, including file uploads, fine-tuning jobs, and model deployment for incident response. Fine-tuning is done using a custom deferrable operator located [here](include/custom_operators/gpt_fine_tune.py).
+- [inference_execution_example](dags/patterns/inference_execution_example.py): Inference execution pattern for processing individual requests through trained AI models.
+- [multi_agent_example](dags/patterns/multi_agent_example.py): Multi-agent system with an orchestrator agent coordinating multiple worker agents.
+- [prompt_chaining_example](dags/patterns/prompt_chaining_example.py): Chaining multiple AI prompts together for multi-step reasoning and analysis workflows.
+- [rag_example](dags/patterns/rag_example.py): Retrieval Augmented Generation (RAG) implementation using Weaviate vector database for embedding storage and semantic search capabilities.
+- [routing_example](dags/patterns/routing_example.py): Incident routing system that uses LLM branching to classify and route incidents based on severity to appropriate response teams.
+
+Helper dags. These dags are used to produce messages to Kafka topics that will start the event-driven patterns inference_execution_example and routing_example.
+
+- [helper_inference_execution_producer_dag](dags/patterns/helper_inference_execution_producer_dag.py): Producer DAG that generates data for the inference execution pattern.
+- [helper_routing_producer_dag](dags/patterns/helper_routing_producer_dag.py): Producer DAG that generates incident data for the routing pattern demonstration.
+
+Simple AI SDK example dags:
+
+- [example_agent](dags/simple_examples_ai_sdk/example_agent.py): Weather report agent that uses external API tools to fetch weather data based on coordinates and generate personalized weather reports.
+- [example_llm_branch](dags/simple_examples_ai_sdk/example_llm_branch.py): Simple LLM-based branching logic that evaluates statement truthfulness and routes to appropriate downstream tasks.
+- [example_syntax_task_agent](dags/simple_examples_ai_sdk/example_syntax_task_agent.py): Basic syntax demonstration for using AI agents within Airflow tasks.
+- [example_syntax_task_llm_branch](dags/simple_examples_ai_sdk/example_syntax_task_llm_branch.py): Syntax example showing how to implement LLM branching decorators in task definitions.
+- [example_syntax_task_llm](dags/simple_examples_ai_sdk/example_syntax_task_llm.py): Fundamental example of using the @task.llm decorator to generate fun facts about user-specified topics.
+
+
+## Resources
+
+- [Event-driven scheduling](https://www.astronomer.io/docs/learn/airflow-event-driven-scheduling)
+- [Airflow AI SDK - Quick Notes](https://www.astronomer.io/ebooks/quick-notes-airflow-ai-sdk-decorators-code-snippets/)
+- [Airflow AI SDK - Repository](https://github.com/astronomer/airflow-ai-sdk)

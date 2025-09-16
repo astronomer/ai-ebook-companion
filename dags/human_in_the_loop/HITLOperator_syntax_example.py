@@ -25,7 +25,7 @@ def HITLOperator_syntax_example():
             )
         },
         execution_timeout=timedelta(minutes=1), # default: None
-        respondents="admin"
+        # respondents="admin"
     )
 
     @task

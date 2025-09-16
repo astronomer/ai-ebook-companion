@@ -40,7 +40,7 @@ def batch_inference_example():
     @task.llm(
         model="gpt-4o-mini",
         system_prompt="Determine the sentiment of the statement given.",
-        result_type=ProductFeedbackSummary,
+        output_type=ProductFeedbackSummary,
     )
     def sentiment_analysis(statement: str):
         return statement

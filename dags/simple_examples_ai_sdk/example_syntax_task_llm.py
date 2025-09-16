@@ -13,7 +13,7 @@ def example_syntax_task_llm():
 
     @task.llm(
         model="gpt-4o-mini",
-        result_type=str,
+        output_type=str,
         system_prompt="Tell me a fun fact about the topic given.",
     )
     def llm_task(**context):

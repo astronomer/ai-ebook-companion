@@ -13,7 +13,7 @@ def apply_function(*args, **kwargs):
 
 trigger = MessageQueueTrigger(
     queue="kafka://localhost:9092/my_topic",
-    apply_function="dags.patterns.level_2A_inference_execution.apply_function",
+    apply_function="dags.patterns.inference_execution_example.apply_function",
 )
 
 kafka_topic_asset = Asset(
@@ -37,7 +37,7 @@ def inference_execution_example():
 
     @task.llm(
         model="gpt-4o",
-        result_type=str,
+        output_type=str,
         system_prompt="Tell me a fun fact about the topic given.",
     )
     def llm_task(message):
