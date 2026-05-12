@@ -53,7 +53,7 @@ GenAI pattern dags:
 - [rag_example](dags/patterns/rag_example.py): Retrieval Augmented Generation (RAG) implementation using Weaviate vector database for embedding storage and semantic search capabilities.
 - [routing_example](dags/patterns/routing_example.py): Incident routing system that uses LLM branching to classify and route incidents based on severity to appropriate response teams.
 
-Helper dags. These dags are used to produce messages to Kafka topics that will start the event-driven patterns inference_execution_example and routing_example.
+**Helper dags**. These dags are used to produce messages to Kafka topics that will start the event-driven patterns inference_execution_example and routing_example.
 
 - [helper_inference_execution_producer_dag](dags/patterns/helper_inference_execution_producer_dag.py): Producer DAG that generates data for the inference execution pattern.
 - [helper_routing_producer_dag](dags/patterns/helper_routing_producer_dag.py): Producer DAG that generates incident data for the routing pattern demonstration.
