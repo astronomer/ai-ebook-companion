@@ -10,3 +10,8 @@ webserver_config.py
 airflow.cfg
 airflow.db
 .venv
+
+.astro/*
+!.astro/config.yaml
+!.astro/test_dag_integrity_default.py
+!.astro/dag_integrity_exceptions.txt

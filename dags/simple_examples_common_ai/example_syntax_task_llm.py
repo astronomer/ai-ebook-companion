@@ -7,12 +7,12 @@ from airflow.sdk import dag, task, Param
             default="yourself",
         ),
     },
-    tags=["AI SDK Syntax Example"]
+    tags=["Common AI Syntax Example"]
 )
 def example_syntax_task_llm():
 
     @task.llm(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         output_type=str,
         system_prompt="Tell me a fun fact about the topic given.",
     )

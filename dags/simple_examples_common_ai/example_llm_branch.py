@@ -8,7 +8,7 @@ from airflow.sdk import dag, task, Param, chain
             default="The sky is green",
         ),
     },
-    tags=["AI SDK Syntax Example"]
+    tags=["Common AI Syntax Example"]
 )
 def example_llm_branch():
 
@@ -17,7 +17,7 @@ def example_llm_branch():
         return context["params"]["statement"]
 
     @task.llm_branch(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt="Choose a branch based"
         + "on truthfulness of the statement given."
         + "If the truthfulness is unclear, "

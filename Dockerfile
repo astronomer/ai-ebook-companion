@@ -1,1 +1,3 @@
-FROM astrocrpublic.azurecr.io/runtime-dev:3.1-2
+FROM astrocrpublic.azurecr.io/runtime:3.2
+
+ENV PYTHONPATH=/usr/local/airflow:${PYTHONPATH}

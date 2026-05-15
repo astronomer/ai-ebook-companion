@@ -40,7 +40,7 @@ def routing_example():
             return incident_data
 
     @task.llm_branch(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt=(
             "You are an advanced incident triage system. Analyze the incident report and route it appropriately:\n"
             "- handle_critical: Life-threatening emergencies, ship-threatening situations, Priority One alerts\n"
