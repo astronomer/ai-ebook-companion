@@ -84,7 +84,6 @@ def fine_tuning_example():
         client = OpenAI()
 
         os.makedirs("include/model_results/plots", exist_ok=True)
-        ts = context["ts_nodash"]
 
         validation_mean_token_acc_list = []
 
@@ -99,7 +98,7 @@ def fine_tuning_example():
 
             df = pd.read_csv(StringIO(decoded_string))
 
-            plot_model_train_val_graph(fine_tuned_model, df, ts)
+            plot_model_train_val_graph(fine_tuned_model, df)
 
             last_validation_mean_token_acc = df["valid_mean_token_accuracy"].iloc[-1]
             validation_mean_token_acc_list.append(last_validation_mean_token_acc)

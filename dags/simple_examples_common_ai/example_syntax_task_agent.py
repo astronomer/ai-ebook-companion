@@ -1,5 +1,4 @@
 from airflow.sdk import dag, task, Param
-from pydantic_ai import Agent
 
 
 def get_current_weather(latitude: float, longitude: float) -> str:
@@ -10,16 +9,10 @@ def get_current_weather(latitude: float, longitude: float) -> str:
     return response.json()
 
 
-weather_report_agent = Agent(
-    "gpt-4o-mini",
-    system_prompt="""
-    You should create a personalized weather report for a user based on their location. 
-    You can use the get_current_weather tool to get the current weather based on a latitude and longitude.
-    """,
-    tools=[
-        get_current_weather,
-    ],
-)
+WEATHER_REPORT_SYSTEM_PROMPT = """
+You should create a personalized weather report for a user based on their location.
+You can use the get_current_weather tool to get the current weather based on a latitude and longitude.
+"""
 
 
 @dag(
@@ -29,11 +22,15 @@ weather_report_agent = Agent(
             default="New York",
         ),
     },
-    tags=["AI SDK Syntax Example"]
+    tags=["Common AI Syntax Example"]
 )
 def example_syntax_task_agent():
 
-    @task.agent(agent=weather_report_agent)
+    @task.agent(
+        llm_conn_id="pydanticai_default",
+        system_prompt=WEATHER_REPORT_SYSTEM_PROMPT,
+        agent_params={"tools": [get_current_weather]},
+    )
     def create_weather_report(**context) -> str:
         location = context["params"]["location"]
         return location

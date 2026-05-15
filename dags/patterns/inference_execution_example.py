@@ -36,7 +36,8 @@ def inference_execution_example():
     _fetch_message_from_kafka = fetch_message_from_kafka()
 
     @task.llm(
-        model="gpt-4o",
+        llm_conn_id="pydanticai_default",
+        model_id="openai:gpt-4o",
         output_type=str,
         system_prompt="Tell me a fun fact about the topic given.",
     )

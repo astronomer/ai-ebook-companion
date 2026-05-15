@@ -1,9 +1,9 @@
 from typing import Literal
 from airflow.sdk import dag, task, Param
-import airflow_ai_sdk as ai_sdk
+from pydantic import BaseModel
 
 
-class ProductFeedbackSummary(ai_sdk.BaseModel):
+class ProductFeedbackSummary(BaseModel):
     summary: str
     sentiment: Literal["positive", "negative", "neutral"]
     feature_requests: list[str]
@@ -38,7 +38,7 @@ def batch_inference_example():
         return context["params"]["statements"]
 
     @task.llm(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt="Determine the sentiment of the statement given.",
         output_type=ProductFeedbackSummary,
     )

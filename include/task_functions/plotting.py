@@ -3,14 +3,13 @@ import pandas as pd
 
 
 def plot_model_train_val_graph(
-    fine_tuned_model: str, df: pd.DataFrame, ts: str
+    fine_tuned_model: str, df: pd.DataFrame
 ) -> None:
     """
     Plot the training and validation loss and accuracy over time.
     Args:
         fine_tuned_model (str): The name of the fine-tuned model.
         df (pd.DataFrame): The DataFrame containing the training results.
-        ts (str): The timestamp of the fine-tuning run.
     """
 
     # TODO: prettify
@@ -57,4 +56,4 @@ def plot_model_train_val_graph(
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig(f"include/model_results/plots/{ts}_fine_tuning_model_results.png")
+    plt.savefig(f"include/model_results/plots/fine_tuning_model_results.png")

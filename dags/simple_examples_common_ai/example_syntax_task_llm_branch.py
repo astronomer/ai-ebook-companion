@@ -8,12 +8,12 @@ from airflow.sdk import dag, task, Param, chain
             default="The sky is green",
         ),
     },
-    tags=["AI SDK Syntax Example"]
+    tags=["Common AI Syntax Example"]
 )
 def example_syntax_task_llm_branch():
 
     @task.llm_branch(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt="Choose a branch based on truthfulness of the statement given.",
         allow_multiple_branches=False,
     )

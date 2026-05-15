@@ -20,17 +20,28 @@ _WEAVIATE_CONN_ID = "weaviate_default"
 def rag_example():
 
     @task
+    def create_collection_if_not_exists():
+        from airflow.providers.weaviate.hooks.weaviate import WeaviateHook
+
+        hook = WeaviateHook(_WEAVIATE_CONN_ID)
+        client = hook.get_conn()
+        if not client.collections.exists(_COLLECTION_NAME):
+            client.collections.create(_COLLECTION_NAME)
+
+    _create_collection = create_collection_if_not_exists()
+
+    @task
     def get_lists_of_texts(**context):
         match_terms = context["params"]["match_terms"]
         return match_terms
 
     _get_lists_of_texts = get_lists_of_texts()
 
-    @task.embed(
-        model_name="BAAI/bge-small-en-v1.5",
-    )
-    def embed_text(text: str):
-        return text
+    @task
+    def embed_text(text: str) -> list[float]:
+        from sentence_transformers import SentenceTransformer
+        model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+        return model.encode(text).tolist()
 
     _embed_texts = embed_text.expand(text=_get_lists_of_texts)
 
@@ -66,12 +77,14 @@ def rag_example():
         _zip_texts_and_embeds
     )
 
-    @task.embed(
-        model_name="BAAI/bge-small-en-v1.5",
-    )
-    def embed_query(**context):
+    chain(_create_collection, _load_embeddings_to_vector_db)
+
+    @task
+    def embed_query(**context) -> list[float]:
+        from sentence_transformers import SentenceTransformer
         search_term = context["params"]["search_term"]
-        return search_term
+        model = SentenceTransformer("BAAI/bge-small-en-v1.5")
+        return model.encode(search_term).tolist()
 
     _embed_query = embed_query()
 

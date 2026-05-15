@@ -1,9 +1,9 @@
 from typing import Literal
 from airflow.sdk import dag, task, Param
-import airflow_ai_sdk as ai_sdk
+from pydantic import BaseModel
 
 
-class TicketAnalysis(ai_sdk.BaseModel):
+class TicketAnalysis(BaseModel):
     category: Literal[
         "billing",
         "technical",
@@ -20,7 +20,7 @@ class TicketAnalysis(ai_sdk.BaseModel):
     requires_escalation: bool
 
 
-class CustomerResponse(ai_sdk.BaseModel):
+class CustomerResponse(BaseModel):
     response_type: Literal[
         "immediate_resolution", "investigation_needed", "escalation", "educational"
     ]
@@ -30,7 +30,7 @@ class CustomerResponse(ai_sdk.BaseModel):
     follow_up_required: bool
 
 
-class EscalationNotes(ai_sdk.BaseModel):
+class EscalationNotes(BaseModel):
     escalation_reason: str
     technical_details: str
     recommended_team: Literal[
@@ -99,7 +99,7 @@ def prompt_chaining_example():
         return context["params"]["support_tickets"]
 
     @task.llm(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt=(
             "You are an expert customer support analyst. Analyze the support ticket and extract key information. "
             "Consider the customer's tone, urgency indicators, technical complexity, and business impact. "
@@ -121,7 +121,7 @@ def prompt_chaining_example():
         return analysis_prompt
 
     @task.llm(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt=(
             "You are a skilled customer support representative. Based on the ticket analysis, "
             "craft a personalized, empathetic, and solution-oriented response. "
@@ -150,7 +150,7 @@ def prompt_chaining_example():
         return response_prompt
 
     @task.llm(
-        model="gpt-4o-mini",
+        llm_conn_id="pydanticai_default",
         system_prompt=(
             "You are a technical escalation specialist. When a ticket requires escalation, "
             "create detailed internal notes for the engineering or specialist teams. "
